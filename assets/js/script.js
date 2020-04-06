@@ -416,7 +416,9 @@ function write_storage (key, Value){
         window.localStorage.setItem (key, value_serialize);
     } else {
         //value_deserialize.concat(Value);
-        value_deserialize.push(Value);
+        for (var i=0; i < Value.length; i++){
+            value_deserialize.push(Value[i]);
+        }
         console.log(value_deserialize);
         let value_serialize =  JSON.stringify(value_deserialize);
         window.localStorage.setItem (key, value_serialize);
@@ -459,6 +461,7 @@ function displayOverAllResults (event) {
             display_Header.style.paddingBottom = "10px";
             display_Div.appendChild (display_Header);
             console.log ("Overall Length is : " + overallResult.length);
+            console.log (overallResult);
             for (var j=0; j < overallResult.length ; j++){
                 var display_para_div = window.document.createElement("p");
                 display_para_div.className = "display_para";
