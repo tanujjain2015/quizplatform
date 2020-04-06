@@ -1,6 +1,6 @@
 Author: Tanuj Jain
 Dated: Apr-05-2020
-Version: 1.0
+Version: 1.1
 
 Description:
 
@@ -35,7 +35,7 @@ Technology Used:
 3. Bubbuling. 
 
 Known Issues:
-1.  Could not complete user result dispaly from Local storage for all Users. 
+1.  View Scores is showing array values as Undefined for some values. Need to debug. 
 2.  Could not provide button to restart the quiz. 
 3.  UI Look & Feel not complete. 
 4.  Need to put a check on user entry to store result only once. 

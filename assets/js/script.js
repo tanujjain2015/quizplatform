@@ -6,7 +6,7 @@
 
 //Populate Question Bank in system. 
 populateQuestionBank();
-//Store Question Bank in Local Storage. 
+//Read Question Bank in Local Storage. 
 let ques = readLocalStorageKeyConvertToObject("Question Bank");
 
 
@@ -24,9 +24,9 @@ header_div_left_El.setAttribute("id", "header-div-left");
 headerEl.appendChild(header_div_left_El);
 
 var header_div_left_a_El = window.document.createElement("a");
-header_div_left_a_El.className = "header-div-left-a"
-header_div_left_a_El.setAttribute("id","header-div-left-a")
-header_div_left_a_El.textContent = "View High Score";
+header_div_left_a_El.className = "header-div-left-a";
+header_div_left_a_El.setAttribute("id","header-div-left-a");
+header_div_left_a_El.textContent = "View Scores";
 header_div_left_a_El.setAttribute("href","#NEED TO ADD");
 
 header_div_left_El.appendChild(header_div_left_a_El);
@@ -124,13 +124,9 @@ main_Div_Ul_Answer_El.appendChild (main_Div_Ul_Answer_P_El );
 // Fucntion to populate New questions
 let quizQuestion  = function (newQuestion){
     
-    //for (let j=0; j< ques.length;j++){
-        //console.log(event.type);
-        //Quiz Question and Answer Start from here. 
-        //console.log (ques[j].name);
-        /* console.log("Value of remove child under QuizQuestion is=", removeChild)
-       if (removeChild == false){
-            console.log("I am inside remove Child.log");*/
+        if (document.getElementById("display_Div")){
+            removeElement("display_Div");
+        }
         var main_Div_Ul_Li_Para_El = window.document.createElement ("p");
         main_Div_Ul_Li_Para_El.className = "main-div-ul-li-p";
         main_Div_Ul_Li_Para_El.setAttribute ("id", "main-div-ul-li-p");
@@ -305,6 +301,9 @@ var startQuiz = function (){
         main_El.removeChild(main_Start_Button_div);
     }
     if (counter < ques.length){
+        if (document.getElementById("display_Div")){
+            removeElement("display_Div");
+        }
         quizQuestion(ques[counter]);
         timer();
         counter++;
@@ -314,6 +313,9 @@ var startQuiz = function (){
 submitButton.addEventListener("click", startQuiz);
 
 var updateQuizQuestion = function (){
+    if (document.getElementById("display_Div")){
+        removeElement("display_Div");
+    }
     if (counter < ques.length){
         quizQuestion(ques[counter]);
         counter++;
@@ -378,22 +380,29 @@ var newResult = function(){
     };   
 };
 var execResult = [];
+var resultclickcounter = 0;
 
 var saveResult = function(event){
     console.dir(event.target);
-    if (event.target.id === "main-section-save-button")
+    if (event.target.id === "main-section-save-button" && resultclickcounter < 1)
     {
-        resultcount = execResult.length;
-        console.log("value of resultcount =" + resultcount);
-        execResult.push(newResult());
-        console.log("Value of scorer name is: " + getInputValue());
-        execResult[resultcount].newname = getInputValue();
-        execResult[resultcount].totalscore = currentScore;
-        for (var k=0 ;k <execResult.length;k++) {
-            console.log(execResult[k].newname);
-            console.log(execResult[k].totalscore);
-        };
-        write_storage ("QuizResult", execResult);
+        if (getInputValue() == "" || getInputValue() == null || getInputValue() == undefined){
+            window.alert ("Please Enter Proper Name");
+        } else {
+            resultclickcounter++;
+            console.dir (document.getElementById("main-section-save-button"));
+            resultcount = execResult.length;
+            console.log("value of resultcount =" + resultcount);
+            execResult.push(newResult());
+            console.log("Value of scorer name is: " + getInputValue());
+            execResult[resultcount].newname = getInputValue();
+            execResult[resultcount].totalscore = currentScore;
+            for (var k=0 ;k <execResult.length;k++) {
+                console.log(execResult[k].newname);
+                console.log(execResult[k].totalscore);
+            };
+            write_storage ("QuizResult", execResult);
+        }   
     }
 };
 
@@ -417,11 +426,54 @@ function write_storage (key, Value){
 
 function read_storage (key){
     let value_deserialize = JSON.parse(window.localStorage.getItem(key));
-    return value_deserialize;
+    if (value_deserialize){
+        return value_deserialize;
+    }
 }
 
+function displayOverAllResults (event) {
+    if (event.target.id === "header-div-left-a"){
+        console.log(document.getElementById("display_Div"));
+        if (document.getElementById("display_Div")){
+            removeElement("display_Div");
+        }
+        let overallResult = read_storage("QuizResult");
+        if (overallResult != null){
+            var display_Div = window.document.createElement("div");
+            display_Div.className = "display_Div";
+            display_Div.setAttribute("id", "display_Div");
+            display_Div.align= "center";
+            display_Div.style.paddingBottom = "10px";
+            if (document.getElementById("start-div")){
+                document.getElementById("start-div").appendChild (display_Div);
+            } else if (document.getElementById("answer")) {
+                document.getElementById("answer").appendChild (display_Div);
+            } else {
+                main_Section_El.appendChild (display_Div);
+            }
+            var display_Header = window.document.createElement("h2");
+            display_Header.className = "display_Header";
+            display_Header.setAttribute("id", "display_Header");
+            display_Header.align= "center";
+            display_Header.textContent = "Overall Results"
+            display_Header.style.paddingBottom = "10px";
+            display_Div.appendChild (display_Header);
+            console.log ("Overall Length is : " + overallResult.length);
+            for (var j=0; j < overallResult.length ; j++){
+                var display_para_div = window.document.createElement("p");
+                display_para_div.className = "display_para";
+                display_para_div.setAttribute("id", "display_para");
+                display_para_div.textContent = overallResult[j].newname + " : " + overallResult[j].totalscore;
+                display_para_div.style.align= "center";
+                display_para_div.style.fontSize = "26px";
+                display_para_div.style.paddingBottom = "2px";
+                display_Div.appendChild (display_para_div);
+            }
+        }
+    }
+}
 
-
+header_div_left_a_El.addEventListener("click", displayOverAllResults);
 
 main_Div_Ul_Li_El.addEventListener("click", nextQuestion);
 
