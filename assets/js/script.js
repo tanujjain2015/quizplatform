@@ -206,7 +206,7 @@ let quizQuestion  = function (newQuestion){
     }*/
 };
 
-// Fucntion to populate Save and Populate resut. 
+// Fucntion to populate Save and Populate ret. 
 var saveUILayout = function(){
 
     var result_div = window.document.createElement("div");
